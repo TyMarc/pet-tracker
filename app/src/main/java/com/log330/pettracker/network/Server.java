@@ -11,6 +11,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.log330.pettracker.listener.FetchListener;
 import com.log330.pettracker.model.GPSPoint;
+import com.log330.pettracker.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,9 +45,10 @@ public class Server {
                                 if(!json.getJSONObject(i).getString("date").equals("0000-00-00")) {
                                     double latitude = json.getJSONObject(i).getDouble("latitude");
                                     double longitude = json.getJSONObject(i).getDouble("longitude");
-                                    String timestampStr = json.getJSONObject(i).getString("timestamp");
-                                    Date date = Date.valueOf(timestampStr);
-                                    GPSPoint point = new GPSPoint(latitude, longitude, date.getTime());
+                                    Date date = Date.valueOf(json.getJSONObject(i).getString("date"));
+                                    long time = Utils.getMillisTime(json.getJSONObject(i).getString("timegmt"));
+                                    GPSPoint point = new GPSPoint(latitude, longitude, time + date.getTime());
+                                    points.add(point);
                                 }
                             }
                             if(listener != null) {
