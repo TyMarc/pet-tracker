@@ -1,55 +1,56 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".Login"
-    android:background="@color/white">
+    android:layout_height="match_parent"
+    tools:context=".Login">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:src="@drawable/logo"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/lost_dog"
+        android:scaleType="centerCrop"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true">
-
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/username"/>
+            android:layout_centerInParent="true"
+            android:padding="30dp"
+            android:background="@drawable/rounded_bg"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/logo"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/password"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/username"/>
 
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/connect"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="right"
-            android:text="@string/connect"/>
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/password"/>
 
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
 
-
+            <Button
+                android:id="@+id/connect"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="right"
+                android:text="@string/connect"/>
+        </LinearLayout>
 </RelativeLayout>
