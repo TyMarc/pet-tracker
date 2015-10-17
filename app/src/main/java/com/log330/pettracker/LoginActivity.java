@@ -1,6 +1,8 @@
 package com.log330.pettracker;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -17,6 +19,11 @@ import com.log330.pettracker.network.Server;
 import java.util.ArrayList;
 
 public class LoginActivity extends Activity implements View.OnClickListener, FetchListener {
+
+    public static void show(Context context) {
+        Intent i = new Intent(context, LoginActivity.class);
+        context.startActivity(i);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

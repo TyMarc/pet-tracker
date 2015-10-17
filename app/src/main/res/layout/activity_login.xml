@@ -14,8 +14,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:padding="30dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:background="@drawable/rounded_bg"
             android:elevation="10dp"
             android:orientation="vertical">
@@ -34,7 +34,9 @@
 
             <EditText
                 android:id="@+id/username"
-                android:layout_width="150dp"
+                android:layout_width="match_parent"
+                android:singleLine="true"
+                android:ems="16"
                 android:layout_height="wrap_content" />
 
             <TextView
@@ -44,7 +46,9 @@
 
             <EditText
                 android:id="@+id/password"
-                android:layout_width="150dp"
+                android:layout_width="match_parent"
+                android:singleLine="true"
+                android:ems="16"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"/>
 

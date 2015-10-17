@@ -2,4 +2,5 @@
 <resources>
     <color name="white">#FFFFFF</color>
     <color name="main_color">#96D42C</color>
+    <color name="pet_black">#2B2D2F</color>
 </resources>

@@ -2,22 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_camara" android:icon="@android:drawable/ic_menu_camera"
-            android:title="Import" />
-        <item android:id="@+id/nav_gallery" android:icon="@android:drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item android:id="@+id/nav_slideshow" android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item android:id="@+id/nav_manage" android:icon="@android:drawable/ic_menu_manage"
-            android:title="Tools" />
+        <item android:id="@+id/nav_gps" android:icon="@android:drawable/ic_dialog_map"
+            android:title="@string/gps" android:checked="true"/>
+        <item android:id="@+id/nav_tracker" android:icon="@android:drawable/ic_menu_mylocation"
+            android:title="@string/tracker" />
+        <item android:id="@+id/nav_zones" android:icon="@android:drawable/ic_menu_compass"
+            android:title="@string/zones" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/settings">
         <menu>
-            <item android:id="@+id/nav_share" android:icon="@android:drawable/ic_menu_share"
-                android:title="Share" />
-            <item android:id="@+id/nav_send" android:icon="@android:drawable/ic_menu_send"
-                android:title="Send" />
+            <item android:id="@+id/nav_logout" android:icon="@android:drawable/ic_delete"
+                android:title="@string/logout" />
         </menu>
     </item>
 
