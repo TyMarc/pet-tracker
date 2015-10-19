@@ -14,16 +14,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.log330.pettracker.adapter.TrackerAdapter;
+import com.log330.pettracker.adapter.ZoneAdapter;
 import com.log330.pettracker.listener.FetchListener;
 import com.log330.pettracker.model.GPSPoint;
 import com.log330.pettracker.network.Server;
 import com.log330.pettracker.utils.PreferencesController;
+import com.log330.pettracker.utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +36,9 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, FetchListener {
     private GoogleMap mMap;
+    private Toolbar toolbar;
+    private ZoneAdapter zoneAdapter;
+    private TrackerAdapter trackerAdapter;
 
     public static void show(Context context) {
         Intent i = new Intent(context, MainActivity.class);
@@ -42,7 +49,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -57,6 +64,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         setUpMapIfNeeded();
+
+        zoneAdapter = new ZoneAdapter(this, Utils.generateDummyZones());
+        ((ListView) findViewById(R.id.list_zones)).setAdapter(zoneAdapter);
+
+        trackerAdapter = new TrackerAdapter(this, Utils.generateDummyTrackers());
+        ((ListView) findViewById(R.id.list_trackers)).setAdapter(trackerAdapter);
     }
 
     @Override
@@ -147,9 +160,20 @@ public class MainActivity extends AppCompatActivity
             LoginActivity.show(this);
             finish();
         } else if (id == R.id.nav_tracker) {
-
+            findViewById(R.id.maps_layout).setVisibility(View.GONE);
+            findViewById(R.id.tracker_layout).setVisibility(View.VISIBLE);
+            findViewById(R.id.zone_layout).setVisibility(View.GONE);
+            toolbar.setTitle(R.string.tracker);
         } else if (id == R.id.nav_zones) {
-
+            findViewById(R.id.maps_layout).setVisibility(View.GONE);
+            findViewById(R.id.tracker_layout).setVisibility(View.GONE);
+            findViewById(R.id.zone_layout).setVisibility(View.VISIBLE);
+            toolbar.setTitle(R.string.zones);
+        } else if (id == R.id.nav_gps) {
+            findViewById(R.id.maps_layout).setVisibility(View.VISIBLE);
+            findViewById(R.id.tracker_layout).setVisibility(View.GONE);
+            findViewById(R.id.zone_layout).setVisibility(View.GONE);
+            toolbar.setTitle(R.string.app_name);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
