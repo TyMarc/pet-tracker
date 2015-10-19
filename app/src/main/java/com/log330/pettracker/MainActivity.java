@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.log330.pettracker.listener.FetchListener;
 import com.log330.pettracker.model.GPSPoint;
 import com.log330.pettracker.network.Server;
+import com.log330.pettracker.utils.PreferencesController;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_logout) {
+            PreferencesController.setPreference(this, PreferencesController.IS_ALREADY_LOGGED_IN, false);
             LoginActivity.show(this);
             finish();
         } else if (id == R.id.nav_tracker) {

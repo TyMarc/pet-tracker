@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.log330.pettracker.listener.FetchListener;
 import com.log330.pettracker.model.GPSPoint;
 import com.log330.pettracker.network.Server;
+import com.log330.pettracker.utils.PreferencesController;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,11 @@ public class LoginActivity extends Activity implements View.OnClickListener, Fet
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        if(PreferencesController.getBooleanPreference(this, PreferencesController.IS_ALREADY_LOGGED_IN)) {
+            MainActivity.show(this);
+            finish();
+        }
+
         findViewById(R.id.connect).setOnClickListener(this);
     }
 
@@ -38,6 +44,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Fet
         if(v.getId() == R.id.connect) {
             if(((EditText) findViewById(R.id.username)).getText().toString().equals("demo")
                     && ((EditText) findViewById(R.id.password)).getText().toString().equals("demo")) {
+                PreferencesController.setPreference(this, PreferencesController.IS_ALREADY_LOGGED_IN, true);
                 MainActivity.show(this);
                 finish();
             } else {
