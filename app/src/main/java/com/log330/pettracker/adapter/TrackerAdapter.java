@@ -9,9 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.log330.pettracker.R;
-import com.log330.pettracker.model.SquareZone;
 import com.log330.pettracker.model.Tracker;
-import com.log330.pettracker.model.Zone;
 
 import java.util.ArrayList;
 

@@ -20,4 +20,9 @@
     <string name="gps">GPS</string>
     <string name="circle_zone">Circle zone</string>
     <string name="square_zone">Square zone</string>
+    <string name="delete_zone_desc">Do you want to delete this zone?</string>
+    <string name="delete_zone_title">Delete</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="logout_desc">Do you really want to logout?</string>
 </resources>

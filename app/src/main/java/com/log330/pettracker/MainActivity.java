@@ -1,10 +1,10 @@
 package com.log330.pettracker;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,19 +12,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.log330.pettracker.adapter.TrackerAdapter;
 import com.log330.pettracker.adapter.ZoneAdapter;
 import com.log330.pettracker.listener.FetchListener;
 import com.log330.pettracker.model.GPSPoint;
+import com.log330.pettracker.model.Zone;
 import com.log330.pettracker.network.Server;
 import com.log330.pettracker.utils.PreferencesController;
 import com.log330.pettracker.utils.Utils;
@@ -34,11 +38,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, FetchListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FetchListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, AdapterView.OnItemLongClickListener {
     private GoogleMap mMap;
     private Toolbar toolbar;
     private ZoneAdapter zoneAdapter;
     private TrackerAdapter trackerAdapter;
+    private ArrayList<Marker> currentMarkers;
 
     public static void show(Context context) {
         Intent i = new Intent(context, MainActivity.class);
@@ -52,8 +57,7 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(this);
+        currentMarkers = new ArrayList<>();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -65,8 +69,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         setUpMapIfNeeded();
 
-        zoneAdapter = new ZoneAdapter(this, Utils.generateDummyZones());
+        ArrayList<Zone> zones = new ArrayList<>();
+        for(PolygonOptions z : Utils.generateDummyPolygonOptions()) {
+            zones.add(new Zone(mMap.addPolygon(z)));
+        }
+        zoneAdapter = new ZoneAdapter(this, zones);
         ((ListView) findViewById(R.id.list_zones)).setAdapter(zoneAdapter);
+        ((ListView) findViewById(R.id.list_zones)).setOnItemLongClickListener(this);
 
         trackerAdapter = new TrackerAdapter(this, Utils.generateDummyTrackers());
         ((ListView) findViewById(R.id.list_trackers)).setAdapter(trackerAdapter);
@@ -117,13 +126,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
         Server.fetchGPS(this, this);
+        mMap.setOnMapClickListener(this);
+        mMap.setOnMarkerClickListener(this);
     }
 
     @Override
@@ -141,13 +149,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View view) {
-        if(view.getId() == R.id.fab) {
-
-        }
-    }
-
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -156,9 +157,25 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_logout) {
-            PreferencesController.setPreference(this, PreferencesController.IS_ALREADY_LOGGED_IN, false);
-            LoginActivity.show(this);
-            finish();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.logout);
+            builder.setMessage(R.string.logout_desc);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    PreferencesController.setPreference(MainActivity.this, PreferencesController.IS_ALREADY_LOGGED_IN, false);
+                    LoginActivity.show(MainActivity.this);
+                    finish();
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            builder.create().show();
         } else if (id == R.id.nav_tracker) {
             findViewById(R.id.maps_layout).setVisibility(View.GONE);
             findViewById(R.id.tracker_layout).setVisibility(View.VISIBLE);
@@ -200,5 +217,50 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFetchError() {
 
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        currentMarkers.add(mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory
+                .fromResource(R.drawable.pin))));
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if(currentMarkers.contains(marker) && currentMarkers.size() >= 3) {
+            PolygonOptions po = Utils.createSquare(currentMarkers);
+            zoneAdapter.add(new Zone(mMap.addPolygon(po)));
+            zoneAdapter.notifyDataSetChanged();
+            for(Marker m : currentMarkers) {
+                m.remove();
+            }
+            currentMarkers.clear();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.delete_zone_title);
+        builder.setMessage(R.string.delete_zone_desc);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Zone zone = zoneAdapter.getItem(position);
+                zone.getPolygon().remove();
+                zoneAdapter.remove(zone);
+                zoneAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.create().show();
+        return false;
     }
 }

@@ -5,11 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.log330.pettracker.R;
-import com.log330.pettracker.model.SquareZone;
 import com.log330.pettracker.model.Zone;
 
 import java.util.ArrayList;
@@ -55,7 +53,7 @@ public class ZoneAdapter extends ArrayAdapter<Zone> {
 
         Zone r = getItem(position);
 
-        holder.name.setText(r instanceof SquareZone ? R.string.square_zone : R.string.circle_zone);
+        holder.name.setText("Zone " + (position+1));
 
         return rowView;
     }
