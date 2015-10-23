@@ -33,6 +33,7 @@ import com.log330.pettracker.model.GPSPoint;
 import com.log330.pettracker.model.Tracker;
 import com.log330.pettracker.model.Zone;
 import com.log330.pettracker.network.Server;
+import com.log330.pettracker.utils.AvatarGenerator;
 import com.log330.pettracker.utils.PreferencesController;
 import com.log330.pettracker.utils.Utils;
 
@@ -84,6 +85,21 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Tracker tracker = trackerAdapter.getItem(position);
                 tracker.setEnabled(!tracker.isEnabled());
+                if(tracker.getPoint() != null && tracker.getPoints() != null) {
+                    if (tracker.isEnabled()) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        Date date = new Date(tracker.getTimestamp());
+                        tracker.setPoint(mMap.addMarker(new MarkerOptions().position(tracker.getPoint().getPosition()).title(tracker.getName()).snippet(sdf.format(date))));
+                    } else {
+                        if(tracker.getMarkers() != null && !tracker.getMarkers().isEmpty()) {
+                            for(Marker m : tracker.getMarkers()) {
+                                m.remove();
+                            }
+                            tracker.setMarkers(null);
+                        }
+                        tracker.getPoint().remove();
+                    }
+                }
                 trackerAdapter.notifyDataSetChanged();
             }
         });
@@ -101,7 +117,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-        trackerAdapter = new TrackerAdapter(this, Utils.generateDummyTrackers());
+        trackerAdapter = new TrackerAdapter(this, new ArrayList<Tracker>());
         ((ListView) findViewById(R.id.list_trackers)).setAdapter(trackerAdapter);
     }
 
@@ -227,16 +243,15 @@ public class MainActivity extends AppCompatActivity
     public void onFetchSuccessful(ArrayList<GPSPoint> points) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date date;
-        double totLong = 0;
-        double totLat = 0;
-        for(GPSPoint point : points) {
-            date = new Date(point.getTimestamp());
-            mMap.addMarker(new MarkerOptions().position(new LatLng(point.getLatitude(), point.getLongitude())).title("Fluffy le chien").snippet(sdf.format(date)));
-            totLong += point.getLongitude();
-            totLat += point.getLatitude();
-        }
 
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(totLat / points.size(), totLong / points.size()), 17f));
+        if(points.size() > 0) {
+            Tracker tracker = new Tracker(AvatarGenerator.generate(150, 150), "Wiwi le ouistiti", true, points, points.get(0).getTimestamp());
+            date = new Date(tracker.getTimestamp());
+            tracker.setPoint(mMap.addMarker(new MarkerOptions().position(new LatLng(points.get(0).getLatitude(), points.get(0).getLongitude())).title(tracker.getName()).snippet(sdf.format(date))));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(points.get(0).getLatitude(), points.get(0).getLongitude()), 17f));
+            trackerAdapter.add(tracker);
+            trackerAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -265,6 +280,25 @@ public class MainActivity extends AppCompatActivity
                 m.remove();
             }
             currentMarkers.clear();
+        } else {
+            Tracker tracker = trackerAdapter.getTracker(marker);
+            if(tracker != null) {
+                if(tracker.getMarkers() != null && !tracker.getMarkers().isEmpty()) {
+                    for(Marker m : tracker.getMarkers()) {
+                        m.remove();
+                    }
+                    tracker.setMarkers(null);
+                } else {
+                    ArrayList<Marker> markers = new ArrayList<>();
+                    for(GPSPoint p : tracker.getPoints()) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        Date date = new Date(p.getTimestamp());
+                        markers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLatitude(), p.getLongitude())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(tracker.getName()).snippet(sdf.format(date))));
+                    }
+                    tracker.setMarkers(markers);
+                }
+                trackerAdapter.notifyDataSetChanged();
+            }
         }
         return false;
     }

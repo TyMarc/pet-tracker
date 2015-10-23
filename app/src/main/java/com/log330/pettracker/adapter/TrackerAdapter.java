@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.Marker;
 import com.log330.pettracker.R;
 import com.log330.pettracker.model.Tracker;
 
@@ -24,6 +25,15 @@ public class TrackerAdapter extends ArrayAdapter<Tracker> {
     public TrackerAdapter(Context context, ArrayList<Tracker> trackers) {
         super(context, R.layout.tracker_item, trackers);
         mContext = context;
+    }
+
+    public Tracker getTracker(Marker marker) {
+        for(int i=0; i<getCount(); i++) {
+            if(getItem(i).getPoint().equals(marker)) {
+                return getItem(i);
+            }
+        }
+        return null;
     }
 
     static class ViewHolder {
