@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity
         Server.fetchGPS(this, this);
         mMap.setOnMapClickListener(this);
         mMap.setOnMarkerClickListener(this);
+
     }
 
     @Override
@@ -206,7 +208,7 @@ public class MainActivity extends AppCompatActivity
         double totLat = 0;
         for(GPSPoint point : points) {
             date = new Date(point.getTimestamp());
-            mMap.addMarker(new MarkerOptions().position(new LatLng(point.getLatitude(), point.getLongitude())).title("Tracker 1\n" + sdf.format(date)));
+            mMap.addMarker(new MarkerOptions().position(new LatLng(point.getLatitude(), point.getLongitude())).title("Fluffy le chien").snippet(sdf.format(date)));
             totLong += point.getLongitude();
             totLat += point.getLatitude();
         }
@@ -235,6 +237,8 @@ public class MainActivity extends AppCompatActivity
                 m.remove();
             }
             currentMarkers.clear();
+        } else if(currentMarkers.contains(marker) && currentMarkers.size() < 3) {
+          currentMarkers.clear();
         }
         return false;
     }
