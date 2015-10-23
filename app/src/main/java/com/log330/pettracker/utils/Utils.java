@@ -41,13 +41,13 @@ public class Utils {
     public static ArrayList<Tracker> generateDummyTrackers() {
         ArrayList<Tracker> trackers = new ArrayList<Tracker>();
 
-        Tracker tracker = new Tracker(AvatarGenerator.generate(150, 150), "Fluffy le chien");
+        Tracker tracker = new Tracker(AvatarGenerator.generate(150, 150), "Fluffy le chien", true);
         trackers.add(tracker);
 
-        tracker = new Tracker(AvatarGenerator.generate(150, 150), "Miaow le chat");
+        tracker = new Tracker(AvatarGenerator.generate(150, 150), "Miaow le chat", false);
         trackers.add(tracker);
 
-        tracker = new Tracker(AvatarGenerator.generate(150, 150), "Pitpit l'oiseau");
+        tracker = new Tracker(AvatarGenerator.generate(150, 150), "Pitpit l'oiseau", false);
         trackers.add(tracker);
 
         return trackers;

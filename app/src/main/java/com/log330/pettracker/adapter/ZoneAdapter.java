@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.log330.pettracker.R;
@@ -26,6 +27,7 @@ public class ZoneAdapter extends ArrayAdapter<Zone> {
 
     static class ViewHolder {
         public TextView name;
+        public ImageView checkBox;
     }
 
     private LayoutInflater getInflater(){
@@ -44,6 +46,7 @@ public class ZoneAdapter extends ArrayAdapter<Zone> {
 
             ViewHolder holder = new ViewHolder();
             holder.name = (TextView) rowView.findViewById(R.id.name);
+            holder.checkBox = (ImageView) rowView.findViewById(R.id.checkbox);
             rowView.setTag(holder);
         } else{
             rowView = convertView;
@@ -54,6 +57,8 @@ public class ZoneAdapter extends ArrayAdapter<Zone> {
         Zone r = getItem(position);
 
         holder.name.setText("Zone " + (position+1));
+
+        holder.checkBox.setSelected(r.isEnabled());
 
         return rowView;
     }

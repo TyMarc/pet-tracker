@@ -13,12 +13,26 @@ import java.util.List;
  */
 public class Zone {
     private Polygon po;
+    private boolean isEnabled;
 
     public Zone(Polygon po) {
         this.po = po;
+        isEnabled = true;
     }
 
     public Polygon getPolygon() {
         return po;
+    }
+
+    public boolean isEnabled(){
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
+
+    public void setPolygon(Polygon po) {
+        this.po = po;
     }
 }

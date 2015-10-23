@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.log330.pettracker.adapter.TrackerAdapter;
 import com.log330.pettracker.adapter.ZoneAdapter;
 import com.log330.pettracker.listener.FetchListener;
 import com.log330.pettracker.model.GPSPoint;
+import com.log330.pettracker.model.Tracker;
 import com.log330.pettracker.model.Zone;
 import com.log330.pettracker.network.Server;
 import com.log330.pettracker.utils.PreferencesController;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FetchListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, AdapterView.OnItemLongClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FetchListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, AdapterView.OnItemLongClickListener{
     private GoogleMap mMap;
     private Toolbar toolbar;
     private ZoneAdapter zoneAdapter;
@@ -77,7 +79,28 @@ public class MainActivity extends AppCompatActivity
         zoneAdapter = new ZoneAdapter(this, zones);
         ((ListView) findViewById(R.id.list_zones)).setAdapter(zoneAdapter);
         ((ListView) findViewById(R.id.list_zones)).setOnItemLongClickListener(this);
+        ((ListView) findViewById(R.id.list_trackers)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Tracker tracker = trackerAdapter.getItem(position);
+                tracker.setEnabled(!tracker.isEnabled());
+                trackerAdapter.notifyDataSetChanged();
+            }
+        });
 
+        ((ListView) findViewById(R.id.list_zones)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Zone zone = zoneAdapter.getItem(position);
+                zone.setEnabled(!zone.isEnabled());
+                zoneAdapter.notifyDataSetChanged();
+                if(zone.isEnabled()) {
+                    zone.setPolygon(mMap.addPolygon(new PolygonOptions().fillColor(Color.BLUE).strokeColor(Color.TRANSPARENT).addAll(zone.getPolygon().getPoints())));
+                } else {
+                    zone.getPolygon().remove();
+                }
+            }
+        });
         trackerAdapter = new TrackerAdapter(this, Utils.generateDummyTrackers());
         ((ListView) findViewById(R.id.list_trackers)).setAdapter(trackerAdapter);
     }

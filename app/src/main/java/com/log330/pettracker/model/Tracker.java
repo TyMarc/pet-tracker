@@ -8,10 +8,12 @@ import android.graphics.Bitmap;
 public class Tracker {
     private Bitmap avatar;
     private String name;
+    private boolean isEnabled;
 
-    public Tracker(Bitmap avatar, String name) {
+    public Tracker(Bitmap avatar, String name, boolean isEnabled) {
         this.avatar = avatar;
         this.name = name;
+        this.isEnabled = isEnabled;
     }
 
     public Bitmap getAvatar() {
@@ -20,5 +22,13 @@ public class Tracker {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isEnabled(){
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
 }

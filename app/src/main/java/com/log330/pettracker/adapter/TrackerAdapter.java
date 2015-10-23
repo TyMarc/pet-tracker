@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ public class TrackerAdapter extends ArrayAdapter<Tracker> {
     static class ViewHolder {
         public TextView name;
         public ImageView avatar;
+        public ImageView checkBox;
     }
 
     private LayoutInflater getInflater(){
@@ -47,6 +49,7 @@ public class TrackerAdapter extends ArrayAdapter<Tracker> {
             ViewHolder holder = new ViewHolder();
             holder.name = (TextView) rowView.findViewById(R.id.name);
             holder.avatar = (ImageView) rowView.findViewById(R.id.avatar);
+            holder.checkBox = (ImageView) rowView.findViewById(R.id.checkbox);
             rowView.setTag(holder);
         } else{
             rowView = convertView;
@@ -62,6 +65,8 @@ public class TrackerAdapter extends ArrayAdapter<Tracker> {
         if(r.getAvatar() != null) {
             holder.avatar.setImageBitmap(r.getAvatar());
         }
+
+        holder.checkBox.setSelected(r.isEnabled());
 
         return rowView;
     }
