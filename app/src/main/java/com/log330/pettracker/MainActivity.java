@@ -261,7 +261,10 @@ public class MainActivity extends AppCompatActivity
             }
             currentMarkers.clear();
         } else if(currentMarkers.contains(marker) && currentMarkers.size() < 3) {
-          currentMarkers.clear();
+            for(Marker m : currentMarkers) {
+                m.remove();
+            }
+            currentMarkers.clear();
         }
         return false;
     }
