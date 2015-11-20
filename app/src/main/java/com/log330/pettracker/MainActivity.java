@@ -125,6 +125,14 @@ public class MainActivity extends AppCompatActivity
         });
         trackerAdapter = new TrackerAdapter(this, new ArrayList<Tracker>());
         ((ListView) findViewById(R.id.list_trackers)).setAdapter(trackerAdapter);
+
+        findViewById(R.id.alert_email).setOnClickListener(this);
+        findViewById(R.id.alert_notification).setOnClickListener(this);
+        findViewById(R.id.alert_sms).setOnClickListener(this);
+        findViewById(R.id.alert_email_check).setSelected(true);
+        findViewById(R.id.alert_sms_check).setSelected(true);
+        findViewById(R.id.alert_notification_check).setSelected(true);
+
     }
 
     @Override
@@ -227,17 +235,26 @@ public class MainActivity extends AppCompatActivity
             findViewById(R.id.maps_layout).setVisibility(View.GONE);
             findViewById(R.id.tracker_layout).setVisibility(View.VISIBLE);
             findViewById(R.id.zone_layout).setVisibility(View.GONE);
+            findViewById(R.id.alert_layout).setVisibility(View.GONE);
             toolbar.setTitle(R.string.tracker);
         } else if (id == R.id.nav_zones) {
             findViewById(R.id.maps_layout).setVisibility(View.GONE);
             findViewById(R.id.tracker_layout).setVisibility(View.GONE);
             findViewById(R.id.zone_layout).setVisibility(View.VISIBLE);
+            findViewById(R.id.alert_layout).setVisibility(View.GONE);
             toolbar.setTitle(R.string.zones);
         } else if (id == R.id.nav_gps) {
             findViewById(R.id.maps_layout).setVisibility(View.VISIBLE);
             findViewById(R.id.tracker_layout).setVisibility(View.GONE);
             findViewById(R.id.zone_layout).setVisibility(View.GONE);
+            findViewById(R.id.alert_layout).setVisibility(View.GONE);
             toolbar.setTitle(R.string.app_name);
+        } else if (id == R.id.alerts) {
+            findViewById(R.id.maps_layout).setVisibility(View.GONE);
+            findViewById(R.id.tracker_layout).setVisibility(View.GONE);
+            findViewById(R.id.zone_layout).setVisibility(View.GONE);
+            findViewById(R.id.alert_layout).setVisibility(View.VISIBLE);
+            toolbar.setTitle(R.string.alerts);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -380,6 +397,12 @@ public class MainActivity extends AppCompatActivity
                     });
 
             alertDialog.show();
+        } else if(v.getId() == R.id.alert_email) {
+            findViewById(R.id.alert_email_check).setSelected(!findViewById(R.id.alert_email_check).isSelected());
+        } else if(v.getId() == R.id.alert_notification) {
+            findViewById(R.id.alert_notification_check).setSelected(!findViewById(R.id.alert_notification_check).isSelected());
+        } else if(v.getId() == R.id.alert_sms) {
+            findViewById(R.id.alert_sms_check).setSelected(!findViewById(R.id.alert_sms_check).isSelected());
         }
     }
 }

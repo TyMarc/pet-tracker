@@ -8,6 +8,8 @@
             android:title="@string/tracker" />
         <item android:id="@+id/nav_zones" android:icon="@android:drawable/ic_menu_compass"
             android:title="@string/zones" />
+        <item android:id="@+id/alerts" android:icon="@android:drawable/ic_dialog_alert"
+            android:title="@string/alerts" />
     </group>
 
     <item android:title="@string/settings">
