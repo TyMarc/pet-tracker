@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,8 +16,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,7 +47,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FetchListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, AdapterView.OnItemLongClickListener{
+        implements NavigationView.OnNavigationItemSelectedListener, FetchListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, AdapterView.OnItemLongClickListener, View.OnClickListener {
     private GoogleMap mMap;
     private Toolbar toolbar;
     private ZoneAdapter zoneAdapter;
@@ -73,8 +78,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         setUpMapIfNeeded();
 
+        findViewById(R.id.fab).setOnClickListener(this);
         ArrayList<Zone> zones = new ArrayList<>();
-        for(PolygonOptions z : Utils.generateDummyPolygonOptions()) {
+        for (PolygonOptions z : Utils.generateDummyPolygonOptions()) {
             zones.add(new Zone(mMap.addPolygon(z)));
         }
         zoneAdapter = new ZoneAdapter(this, zones);
@@ -85,14 +91,14 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Tracker tracker = trackerAdapter.getItem(position);
                 tracker.setEnabled(!tracker.isEnabled());
-                if(tracker.getPoint() != null && tracker.getPoints() != null) {
+                if (tracker.getPoint() != null && tracker.getPoints() != null) {
                     if (tracker.isEnabled()) {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         Date date = new Date(tracker.getTimestamp());
                         tracker.setPoint(mMap.addMarker(new MarkerOptions().position(tracker.getPoint().getPosition()).title(tracker.getName()).snippet(sdf.format(date))));
                     } else {
-                        if(tracker.getMarkers() != null && !tracker.getMarkers().isEmpty()) {
-                            for(Marker m : tracker.getMarkers()) {
+                        if (tracker.getMarkers() != null && !tracker.getMarkers().isEmpty()) {
+                            for (Marker m : tracker.getMarkers()) {
                                 m.remove();
                             }
                             tracker.setMarkers(null);
@@ -110,7 +116,7 @@ public class MainActivity extends AppCompatActivity
                 Zone zone = zoneAdapter.getItem(position);
                 zone.setEnabled(!zone.isEnabled());
                 zoneAdapter.notifyDataSetChanged();
-                if(zone.isEnabled()) {
+                if (zone.isEnabled()) {
                     zone.setPolygon(mMap.addPolygon(new PolygonOptions().fillColor(Color.BLUE).strokeColor(Color.TRANSPARENT).addAll(zone.getPolygon().getPoints())));
                 } else {
                     zone.getPolygon().remove();
@@ -244,7 +250,7 @@ public class MainActivity extends AppCompatActivity
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date date;
 
-        if(points.size() > 0) {
+        if (points.size() > 0) {
             Tracker tracker = new Tracker(AvatarGenerator.generate(150, 150), "Wiwi le ouistiti", true, points, points.get(0).getTimestamp());
             date = new Date(tracker.getTimestamp());
             tracker.setPoint(mMap.addMarker(new MarkerOptions().position(new LatLng(points.get(0).getLatitude(), points.get(0).getLongitude())).title(tracker.getName()).snippet(sdf.format(date))));
@@ -267,30 +273,30 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if(currentMarkers.contains(marker) && currentMarkers.size() >= 3) {
+        if (currentMarkers.contains(marker) && currentMarkers.size() >= 3) {
             PolygonOptions po = Utils.createSquare(currentMarkers);
             zoneAdapter.add(new Zone(mMap.addPolygon(po)));
             zoneAdapter.notifyDataSetChanged();
-            for(Marker m : currentMarkers) {
+            for (Marker m : currentMarkers) {
                 m.remove();
             }
             currentMarkers.clear();
-        } else if(currentMarkers.contains(marker) && currentMarkers.size() < 3) {
-            for(Marker m : currentMarkers) {
+        } else if (currentMarkers.contains(marker) && currentMarkers.size() < 3) {
+            for (Marker m : currentMarkers) {
                 m.remove();
             }
             currentMarkers.clear();
         } else {
             Tracker tracker = trackerAdapter.getTracker(marker);
-            if(tracker != null) {
-                if(tracker.getMarkers() != null && !tracker.getMarkers().isEmpty()) {
-                    for(Marker m : tracker.getMarkers()) {
+            if (tracker != null) {
+                if (tracker.getMarkers() != null && !tracker.getMarkers().isEmpty()) {
+                    for (Marker m : tracker.getMarkers()) {
                         m.remove();
                     }
                     tracker.setMarkers(null);
                 } else {
                     ArrayList<Marker> markers = new ArrayList<>();
-                    for(GPSPoint p : tracker.getPoints()) {
+                    for (GPSPoint p : tracker.getPoints()) {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         Date date = new Date(p.getTimestamp());
                         markers.add(mMap.addMarker(new MarkerOptions().position(new LatLng(p.getLatitude(), p.getLongitude())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(tracker.getName()).snippet(sdf.format(date))));
@@ -326,5 +332,54 @@ public class MainActivity extends AppCompatActivity
 
         builder.create().show();
         return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.fab) {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+            alertDialog.setTitle(R.string.add_tracker);
+
+            LinearLayout ll = new LinearLayout(this);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            ll.setLayoutParams(lp);
+            ll.setOrientation(LinearLayout.VERTICAL);
+            ll.setPadding(50, 0, 50, 0);
+
+            final EditText input = new EditText(MainActivity.this);
+            lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            input.setLayoutParams(lp);
+            input.setHint(R.string.add_tracker_name);
+            ll.addView(input);
+
+            final EditText pin = new EditText(MainActivity.this);
+            pin.setLayoutParams(lp);
+            pin.setInputType(InputType.TYPE_CLASS_NUMBER);
+            pin.setHint(R.string.add_tracker_pin);
+            ll.addView(pin);
+            alertDialog.setView(ll);
+
+            alertDialog.setPositiveButton(R.string.link,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Tracker tracker = new Tracker(AvatarGenerator.generate(150, 150), input.getText().toString(), true);
+                            trackerAdapter.add(tracker);
+                            trackerAdapter.notifyDataSetChanged();
+                        }
+                    });
+
+            alertDialog.setNegativeButton(R.string.cancel,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+            alertDialog.show();
+        }
     }
 }

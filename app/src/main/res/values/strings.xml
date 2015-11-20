@@ -25,4 +25,12 @@
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
     <string name="logout_desc">Do you really want to logout?</string>
+    <string name="add_tracker">Add a tracker</string>
+    <string name="add_tracker_name">Enter a tracker name</string>
+    <string name="no">No</string>
+    <string name="add_tracker_pin">Enter pin number</string>
+    <string name="link">Link</string>
+    <string name="register">Register</string>
+    <string name="username_used">Username already used</string>
+    <string name="minimum_characters">Minimum of 4 characters</string>
 </resources>

@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.log330.pettracker.listener.FetchListener;
@@ -37,6 +38,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Fet
         }
 
         findViewById(R.id.connect).setOnClickListener(this);
+        findViewById(R.id.register).setOnClickListener(this);
     }
 
     @Override
@@ -49,6 +51,34 @@ public class LoginActivity extends Activity implements View.OnClickListener, Fet
                 finish();
             } else {
                 Snackbar.make(findViewById(android.R.id.content), R.string.error_login, Snackbar.LENGTH_SHORT).show();
+            }
+        } else if (v.getId() == R.id.register && findViewById(R.id.connect).getVisibility() == View.VISIBLE) {
+            ((EditText) findViewById(R.id.username)).clearComposingText();
+            ((EditText) findViewById(R.id.password)).clearComposingText();
+            findViewById(R.id.connect).setVisibility(View.GONE);
+            ((LinearLayout.LayoutParams) findViewById(R.id.register).getLayoutParams()).rightMargin = 0;
+        } else if (v.getId() == R.id.register && findViewById(R.id.connect).getVisibility() == View.GONE) {
+            ((EditText) findViewById(R.id.username)).setError(null);
+            ((EditText) findViewById(R.id.password)).setError(null);
+            if(((EditText) findViewById(R.id.username)).getText().toString().equals("demo")) {
+                ((EditText) findViewById(R.id.username)).setError(getString(R.string.username_used));
+
+                if(((EditText) findViewById(R.id.password)).getText().toString().length() <= 3){
+                    ((EditText) findViewById(R.id.password)).setError(getString(R.string.minimum_characters));
+                }
+            } else if(((EditText) findViewById(R.id.username)).getText().toString().length() > 3
+                    && ((EditText) findViewById(R.id.password)).getText().toString().length() > 3 ) {
+                PreferencesController.setPreference(this, PreferencesController.IS_ALREADY_LOGGED_IN, true);
+                MainActivity.show(this);
+                finish();
+            } else {
+                if(((EditText) findViewById(R.id.username)).getText().toString().length() <= 3){
+                    ((EditText) findViewById(R.id.username)).setError(getString(R.string.minimum_characters));
+                }
+
+                if(((EditText) findViewById(R.id.password)).getText().toString().length() <= 3){
+                    ((EditText) findViewById(R.id.password)).setError(getString(R.string.minimum_characters));
+                }
             }
         }
     }
