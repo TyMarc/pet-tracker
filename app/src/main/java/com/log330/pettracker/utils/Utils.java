@@ -1,6 +1,8 @@
 package com.log330.pettracker.utils;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.util.TypedValue;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -82,5 +84,10 @@ public class Utils {
         int meterConversion = 1609;
 
         return new Float(distance * meterConversion).floatValue();
+    }
+
+    public static int convertToPx(Context context, int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources()
+                .getDisplayMetrics());
     }
 }

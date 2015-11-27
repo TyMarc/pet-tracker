@@ -57,6 +57,18 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp">
                 <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:elevation="5dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/btn_cancel_sel"
+                    android:text="@string/cancel"
+                    android:visibility="gone"/>
+
+                <Button
                     android:id="@+id/register"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"

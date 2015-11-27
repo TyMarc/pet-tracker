@@ -17,6 +17,7 @@ import com.log330.pettracker.listener.FetchListener;
 import com.log330.pettracker.model.GPSPoint;
 import com.log330.pettracker.network.Server;
 import com.log330.pettracker.utils.PreferencesController;
+import com.log330.pettracker.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Fet
         }
 
         findViewById(R.id.connect).setOnClickListener(this);
+        findViewById(R.id.cancel).setOnClickListener(this);
         findViewById(R.id.register).setOnClickListener(this);
     }
 
@@ -52,10 +54,17 @@ public class LoginActivity extends Activity implements View.OnClickListener, Fet
             } else {
                 Snackbar.make(findViewById(android.R.id.content), R.string.error_login, Snackbar.LENGTH_SHORT).show();
             }
+        } else if (v.getId() == R.id.cancel) {
+            ((EditText) findViewById(R.id.username)).clearComposingText();
+            ((EditText) findViewById(R.id.password)).clearComposingText();
+            findViewById(R.id.connect).setVisibility(View.VISIBLE);
+            findViewById(R.id.cancel).setVisibility(View.GONE);
+            ((LinearLayout.LayoutParams) findViewById(R.id.register).getLayoutParams()).rightMargin = Utils.convertToPx(this, 10);
         } else if (v.getId() == R.id.register && findViewById(R.id.connect).getVisibility() == View.VISIBLE) {
             ((EditText) findViewById(R.id.username)).clearComposingText();
             ((EditText) findViewById(R.id.password)).clearComposingText();
             findViewById(R.id.connect).setVisibility(View.GONE);
+            findViewById(R.id.cancel).setVisibility(View.VISIBLE);
             ((LinearLayout.LayoutParams) findViewById(R.id.register).getLayoutParams()).rightMargin = 0;
         } else if (v.getId() == R.id.register && findViewById(R.id.connect).getVisibility() == View.GONE) {
             ((EditText) findViewById(R.id.username)).setError(null);

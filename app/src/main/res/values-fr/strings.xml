@@ -14,6 +14,7 @@
     <string name="gps">GPS</string>
     <string name="delete_zone_desc">Voulez-vous effacer cette zone?</string>
     <string name="delete_zone_title">Effacer</string>
+    <string name="delete_tracker_desc">Voulez-vous vraiment effacer ce tracker?</string>
     <string name="yes">Oui</string>
     <string name="cancel">Annuler</string>
     <string name="logout_desc">Voulez-vous vraiment vous déconnecter?</string>

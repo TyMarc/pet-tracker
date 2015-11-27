@@ -5,6 +5,7 @@
     <color name="pet_black">#2B2D2F</color>
     <color name="faded_black">#0D000000</color>
     <color name="dark_grey">#666666</color>
+    <color name="grey">#333333</color>
     <color name="transparent">#00000000</color>
     <color name="faded_bg">#66FFFFFF</color>
     <color name="red">#FF5858</color>

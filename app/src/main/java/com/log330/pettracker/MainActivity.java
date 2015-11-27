@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -86,6 +87,29 @@ public class MainActivity extends AppCompatActivity
         zoneAdapter = new ZoneAdapter(this, zones);
         ((ListView) findViewById(R.id.list_zones)).setAdapter(zoneAdapter);
         ((ListView) findViewById(R.id.list_zones)).setOnItemLongClickListener(this);
+        ((ListView) findViewById(R.id.list_trackers)).setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle(R.string.delete_zone_title);
+                builder.setMessage(R.string.delete_tracker_desc);
+                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        trackerAdapter.remove(trackerAdapter.getItem(position));
+                        trackerAdapter.notifyDataSetChanged();
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.create().show();
+                return false;
+            }
+        });
         ((ListView) findViewById(R.id.list_trackers)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
